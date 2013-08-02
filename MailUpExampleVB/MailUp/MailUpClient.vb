@@ -42,7 +42,7 @@ Namespace MailUp
             End Set
         End Property
 
-        Private m_authorizationEndpoint As [String] = "https://services.mailup.com/Authorization/Authorization"
+        Private m_authorizationEndpoint As [String] = "https://services.mailup.com/Authorization/OAuth/Authorization"
         Public Property AuthorizationEndpoint() As [String]
             Get
                 Return m_authorizationEndpoint
