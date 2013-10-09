@@ -44,6 +44,21 @@ Partial Public Class _Default
             mailUp.LogOn()
         End If
     End Sub
+    ' Sign in button - get tokens with password flow.
+    Protected Sub LogOnWithUsernamePassword_ServerClick(sender As Object, e As EventArgs)
+        Dim mailUp As MailUp.MailUpClient = DirectCast(Session("MailUpClient"), MailUp.MailUpClient)
+        If mailUp IsNot Nothing Then
+            mailUp.LogOnWithUsernamePassword(txtUsr.Text, txtPwd.Text)
+        End If
+
+        If mailUp IsNot Nothing And mailUp.AccessToken IsNot Nothing Then
+            pAuthorization.InnerText = "Authorized. Token: " + mailUp.AccessToken
+        Else
+            pAuthorization.InnerText = "Unauthorized."
+        End If
+
+    End Sub
+
 
     ' Call method button - calls a single API method.
     Protected Sub CallMethod_ServerClick(sender As Object, e As EventArgs)

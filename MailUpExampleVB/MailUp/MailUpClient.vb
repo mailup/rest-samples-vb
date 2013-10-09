@@ -150,6 +150,10 @@ Namespace MailUp
             HttpContext.Current.Response.Redirect(url)
         End Sub
 
+        Public Sub LogOnWithUsernamePassword(username As [String], password As [String])
+            RetreiveAccessToken(username, password)
+        End Sub
+
         Public Function RetreiveAccessToken(code As [String]) As [String]
             Dim statusCode As Integer = 0
             Try
@@ -180,20 +184,40 @@ Namespace MailUp
             Dim statusCode As Integer = 0
             Try
                 Dim cookies As New CookieContainer()
-                Dim wrLogon As HttpWebRequest = DirectCast(WebRequest.Create(m_authorizationEndpoint & "?client_id=" & m_clientId & "&client_secret=" & m_clientSecret & "&response_type=code" & "&username=" & login & "&password=" & password), HttpWebRequest)
+               
+                Dim wrLogon As HttpWebRequest = DirectCast(WebRequest.Create(m_tokenEndpoint), HttpWebRequest)
                 wrLogon.AllowAutoRedirect = False
                 wrLogon.KeepAlive = True
                 wrLogon.CookieContainer = cookies
-                Dim authorizationResponse As HttpWebResponse = DirectCast(wrLogon.GetResponse(), HttpWebResponse)
-                statusCode = CInt(authorizationResponse.StatusCode)
-                Dim objStream As Stream = authorizationResponse.GetResponseStream()
+                wrLogon.Method = "POST"
+                wrLogon.ContentType = "application/x-www-form-urlencoded"
+
+                Dim auth = String.Format("{0}:{1}", m_clientId, m_clientSecret)
+                wrLogon.Headers.Add("Authorization", "Basic " & Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(auth)))
+
+                Dim body As [String] = "client_id=" & m_clientId & "&client_secret=" & m_clientSecret & "&grant_type=password" & "&username=" & login & "&password=" & password
+                Dim byteArray As Byte() = Encoding.UTF8.GetBytes(body)
+                wrLogon.ContentLength = byteArray.Length
+                Dim dataStream As Stream = wrLogon.GetRequestStream()
+                dataStream.Write(byteArray, 0, byteArray.Length)
+                dataStream.Close()
+
+                Dim tokenResponse As HttpWebResponse = DirectCast(wrLogon.GetResponse(), HttpWebResponse)
+                statusCode = CInt(tokenResponse.StatusCode)
+                Dim objStream As Stream = tokenResponse.GetResponseStream()
                 Dim objReader As New StreamReader(objStream)
                 Dim json As [String] = objReader.ReadToEnd()
-                authorizationResponse.Close()
+                tokenResponse.Close()
 
-                Dim code As [String] = ExtractJsonValue(json, "code")
+                m_accessToken = ExtractJsonValue(json, "access_token")
+                m_refreshToken = ExtractJsonValue(json, "refresh_token")
 
-                RetreiveAccessToken(code)
+                SaveToken()
+
+
+
+
+
             Catch wex As WebException
                 Dim wrs As HttpWebResponse = DirectCast(wex.Response, HttpWebResponse)
                 Throw New MailUpException(CInt(wrs.StatusCode), wex.Message)
@@ -201,6 +225,7 @@ Namespace MailUp
                 Throw New MailUpException(statusCode, ex.Message)
             End Try
             Return m_accessToken
+
         End Function
 
         Public Function RefreshAccessToken() As [String]

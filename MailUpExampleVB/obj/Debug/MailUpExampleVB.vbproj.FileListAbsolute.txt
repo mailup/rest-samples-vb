@@ -14,3 +14,11 @@ C:\MailUp\Sorgenti\SovDyn - API Client\NET\v2.1\MailUpExampleVB\obj\Debug\MailUp
 C:\MailUp\Sorgenti\SovDyn - API Client\NET\v2.1\MailUpExampleVB\obj\Debug\MailUpExampleVB.dll
 C:\MailUp\Sorgenti\SovDyn - API Client\NET\v2.1\MailUpExampleVB\obj\Debug\MailUpExampleVB.xml
 C:\MailUp\Sorgenti\SovDyn - API Client\NET\v2.1\MailUpExampleVB\obj\Debug\MailUpExampleVB.pdb
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\obj\Debug\MailUpExampleVB.Resources.resources
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\obj\Debug\MailUpExampleVB.vbproj.GenerateResource.Cache
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\obj\Debug\MailUpExampleVB.dll
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\obj\Debug\MailUpExampleVB.xml
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\obj\Debug\MailUpExampleVB.pdb
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\bin\MailUpExampleVB.dll
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\bin\MailUpExampleVB.pdb
+C:\MailUp\Sorgenti\GitHub\rest-samples-vb\MailUpExampleVB\bin\MailUpExampleVB.xml
