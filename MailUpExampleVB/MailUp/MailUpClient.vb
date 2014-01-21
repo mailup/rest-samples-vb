@@ -62,7 +62,7 @@ Namespace MailUp
             End Set
         End Property
 
-        Private m_consoleEndpoint As [String] = "https://services.mailup.com/API/v1/Rest/ConsoleService.svc"
+        Private m_consoleEndpoint As [String] = "https://services.mailup.com/API/v1.1/Rest/ConsoleService.svc"
         Public Property ConsoleEndpoint() As [String]
             Get
                 Return m_consoleEndpoint
@@ -72,7 +72,7 @@ Namespace MailUp
             End Set
         End Property
 
-        Private m_mailstatisticsEndpoint As [String] = "https://services.mailup.com/API/v1/Rest/MailStatisticsService.svc"
+        Private m_mailstatisticsEndpoint As [String] = "https://services.mailup.com/API/v1.1/Rest/MailStatisticsService.svc"
         Public Property MailstatisticsEndpoint() As [String]
             Get
                 Return m_mailstatisticsEndpoint
