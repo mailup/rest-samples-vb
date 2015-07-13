@@ -1,4 +1,4 @@
-﻿Imports System.Collections.Generic
+Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Net
 Imports System.Web
@@ -274,11 +274,18 @@ Partial Public Class _Default
                 resourceURL = "" & mailUpInstance.ConsoleEndpoint & "/Console/List/1/Templates"
                 strResult = mailUpInstance.CallMethod(resourceURL, "GET", Nothing, MailUp.ContentType.Json)
                 objResult = New JavaScriptSerializer().DeserializeObject(strResult)
-                Dim templates As [Object]() = DirectCast(objResult, [Object]())
-                Dim template As Dictionary(Of [String], [Object]) = DirectCast(templates(0), Dictionary(Of [String], [Object]))
-                Dim templateId As Integer = Integer.Parse(template("Id").ToString())
+                Dim template As Dictionary(Of [String], [Object]) = DirectCast(objResult, Dictionary(Of [String], [Object]))
+                Dim arrItems = DirectCast(template("Items"), [Object]())
+                Dim dictionaryItem As Dictionary(Of [String], [Object])
+                Dim templateId As Int32 = 0
+                If (arrItems.Length > 0) Then
+                    dictionaryItem = DirectCast(arrItems(0), Dictionary(Of [String], [Object]))
+                    templateId = dictionaryItem("Id")
+                    status += "Get the available template list - OK<br/>"
+                Else
+                    status += "Could not find any template to create a new message from<br/>"
+                End If
 
-                status += "Get the available template list - OK<br/>"
 
                 ' Create the new message
                 resourceURL = "" & mailUpInstance.ConsoleEndpoint & "/Console/List/1/Email/Template/" & templateId.ToString()
@@ -286,9 +293,7 @@ Partial Public Class _Default
                 strResult = mailUpInstance.CallMethod(resourceURL, "POST", Nothing, MailUp.ContentType.Json)
                 objResult = New JavaScriptSerializer().DeserializeObject(strResult)
                 items = DirectCast(objResult, Dictionary(Of [String], [Object]))
-                Dim emails As [Object]() = DirectCast(items("Items"), [Object]())
-                Dim email As Dictionary(Of [String], [Object]) = DirectCast(emails(0), Dictionary(Of [String], [Object]))
-                Dim emailId As Integer = Integer.Parse(email("idMessage").ToString())
+                Dim emailId As Integer = Integer.Parse(items("idMessage").ToString())
 
                 status += "Create the new message - OK<br/>"
 
@@ -324,7 +329,7 @@ Partial Public Class _Default
                 ' Upload an image
                 ' Image bytes can be obtained from file, database or any other source
                 Dim wc As New WebClient()
-                Dim imageBytes As Byte() = wc.DownloadData("http://images.apple.com/home/images/ios_title_small.png")
+                Dim imageBytes As Byte() = wc.DownloadData("https://www.google.it/images/srpr/logo11w.png")
                 Dim image As [String] = System.Convert.ToBase64String(imageBytes)
                 resourceURL = "" & mailUpInstance.ConsoleEndpoint & "/Console/List/1/Images"
                 Dim imageRequest As [String] = "{""Base64Data"":""" & image & """,""Name"":""Avatar""}"
@@ -372,9 +377,8 @@ Partial Public Class _Default
                 strResult = mailUpInstance.CallMethod(resourceURL, "POST", emailRequest, MailUp.ContentType.Json)
                 objResult = New JavaScriptSerializer().DeserializeObject(strResult)
                 items = DirectCast(objResult, Dictionary(Of [String], [Object]))
-                Dim emails As [Object]() = DirectCast(items("Items"), [Object]())
-                Dim email As Dictionary(Of [String], [Object]) = DirectCast(emails(0), Dictionary(Of [String], [Object]))
-                Dim emailId As Integer = Integer.Parse(email("idMessage").ToString())
+                Dim template As Dictionary(Of [String], [Object]) = DirectCast(objResult, Dictionary(Of [String], [Object]))
+                Dim emailId = template("idMessage")
                 Session("emailId") = emailId
 
                 status += "Create and save ""hello"" message - OK<br/>"
@@ -421,8 +425,8 @@ Partial Public Class _Default
                 resourceURL = "" & mailUpInstance.ConsoleEndpoint & "/Console/List/1/Tag"
                 strResult = mailUpInstance.CallMethod(resourceURL, "POST", """test tag""", MailUp.ContentType.Json)
                 objResult = New JavaScriptSerializer().DeserializeObject(strResult)
-                Dim tags As [Object]() = DirectCast(objResult, [Object]())
-                Dim tag As Dictionary(Of [String], [Object]) = DirectCast(tags(0), Dictionary(Of [String], [Object]))
+                Dim tags As [Object]()
+                Dim tag As Dictionary(Of [String], [Object]) = DirectCast(objResult, Dictionary(Of [String], [Object]))
                 Dim tagId As Integer = Integer.Parse(tag("Id").ToString())
 
                 status += "Create a new tag - OK<br/>"
@@ -507,6 +511,7 @@ Partial Public Class _Default
 
     ' EXAMPLE 8 - DISPLAY STATISTICS FOR A MESSAGE SENT AT EXAMPLE 7
     Protected Sub RunExample8_ServerClick(sender As Object, e As EventArgs)
+
         Dim status As [String] = ""
         Dim mailUpInstance As MailUp.MailUpClient = DirectCast(Session("MailUpClient"), MailUp.MailUpClient)
 
@@ -522,7 +527,7 @@ Partial Public Class _Default
                 If Session("emailId") IsNot Nothing Then
                     emailId = CInt(Session("emailId"))
                 End If
-                resourceURL = "" & mailUpInstance.MailstatisticsEndpoint & "/Message/" & emailId.ToString() & "/Views/List/Last/" & hours.ToString() & "?pageSize=5&pageNum=0"
+                resourceURL = "" & mailUpInstance.MailstatisticsEndpoint & "/Message/" & emailId.ToString() & "/List/Views?pageSize=5&pageNum=0"
                 strResult = mailUpInstance.CallMethod(resourceURL, "GET", Nothing, MailUp.ContentType.Json)
 
                 status += "Request (to MailStatisticsService.svc) for paged message views list for the previously sent message - OK<br/>"
